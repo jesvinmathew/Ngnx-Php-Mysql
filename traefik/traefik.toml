@@ -1,0 +1,46 @@
+defaultEntryPoints = ["http", "https"]
+logLevel="DEBUG"
+
+[entryPoints]
+    [entryPoints.http]
+        address = ":80"
+        [entryPoints.http.redirect]
+            entryPoint = "https"
+    [entryPoints.https]
+        address = ":443"
+        [entryPoints.https.redirect]
+            regex = "^https://www.(.*)"
+            replacement = "https://$1"
+        [entryPoints.https.tls]
+    [entryPoints.traefik]
+        address = ":8080"
+        [entryPoints.traefik.auth.basic]
+            users = ["admin:$apr1$vngADTJE$ALEsBhnVuvYyyqXWtke3P0"]
+
+[acme]
+    email = "jesvin@logiclabz.co.in"
+    storage = "acme.json"
+    entryPoint = "https"
+    [[acme.domains]]
+        main = "logiclabz.ll"
+        sans = [
+            "www.logiclabz.ll",
+            "www.traefik.logiclabz.ll", 
+            "www.pma.logiclabz.ll", 
+            "www.portainer.logiclabz.ll",
+            "traefik.logiclabz.ll", 
+            "pma.logiclabz.ll", 
+            "portainer.logiclabz.ll"
+        ]
+    [acme.httpChallenge]
+        entryPoint = "http"
+
+[api]
+    entryPoint = "traefik"
+    dashboard = true
+
+[docker]
+    domain = "logiclabz.ll"
+    watch = true
+    exposedByDefault = true
+    swarmMode = false
